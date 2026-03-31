@@ -23,4 +23,4 @@ sources:
   - https://github.com/GeiserX/duplicacy-cli-cron
   - https://github.com/GeiserX/duplicacy-exporter
 annotations:
-  licenses: GPL-3.0
+  licenses: GPL-3.0-or-later

@@ -92,7 +92,7 @@ The Web UI block stays generic on purpose:
 - The default `cron.periodic.mountPath` is `/etc/periodic/daily`, which makes ConfigMap-based wrapper scripts work out of the box
 - `cron.existingSecret`: reuse a pre-created Secret instead of rendering one from values
 - `cron.extraEnvFrom`: bring in External Secrets or other ConfigMaps
-- `cron.timeZone`: pin the CronJob to an explicit timezone instead of relying on cluster defaults
+- `cron.timeZone`: pin the CronJob to an explicit timezone instead of relying on cluster defaults; this field requires a Kubernetes version that supports CronJob time zones
 - `sharedLogs.existingClaim`: use an existing PVC for `LOG_FILE` mode
 - `sharedLogs.accessModes`: keep `ReadWriteMany` unless you are intentionally constraining both workloads to the same node
 - `exporter.storageHostMap`: map raw storage hosts/IPs to friendly labels in metrics
