@@ -8,7 +8,7 @@ metadata:
 data:
   DUPLICACY_THREADS: {{ .Values.cron.env.threads | quote }}
   HOST: {{ .Values.cron.env.host | quote }}
-  LOG_FILE: {{ .Values.cron.logFile | quote }}
+  LOG_FILE: {{ ternary .Values.cron.logFile "" (or .Values.sharedLogs.enabled (not (hasPrefix "/logs/" .Values.cron.logFile))) | quote }}
   MAX_RUNTIME_HOURS: {{ .Values.cron.env.maxRuntimeHours | quote }}
   SECONDARY_PREFLIGHT_TIMEOUT: {{ .Values.cron.env.secondaryPreflightTimeout | quote }}
   SECONDARY_RETRIES: {{ .Values.cron.env.secondaryRetries | quote }}
