@@ -21,11 +21,14 @@ cron:
     tag: "0.1.0"
     pullPolicy: IfNotPresent
   schedule: "0 2 * * *"
+  timeZone: ""
   concurrencyPolicy: Forbid
+  suspend: false
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   restartPolicy: OnFailure
   backoffLimit: 1
+  startingDeadlineSeconds: null
   ttlSecondsAfterFinished: 86400
   activeDeadlineSeconds: null
   command:
@@ -114,7 +117,7 @@ exporter:
   port: 9750
   webhookPath: /webhook
   replayHours: 25
-  tailscaleDomain: mango-alpha.ts.net
+  tailscaleDomain: ""
   storageHostMap: {}
   replicaCount: 1
   service:
