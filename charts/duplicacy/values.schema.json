@@ -11,7 +11,12 @@
     "imagePullSecrets": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
       }
     },
     "serviceAccount": {
@@ -34,12 +39,32 @@
         "enabled": {
           "type": "boolean"
         },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "pullPolicy": {
+              "type": "string"
+            }
+          }
+        },
         "schedule": {
+          "type": "string"
+        },
+        "timeZone": {
           "type": "string"
         },
         "concurrencyPolicy": {
           "type": "string",
           "enum": ["Allow", "Forbid", "Replace"]
+        },
+        "suspend": {
+          "type": "boolean"
         },
         "successfulJobsHistoryLimit": {
           "type": "integer",
@@ -56,6 +81,10 @@
         "backoffLimit": {
           "type": "integer",
           "minimum": 0
+        },
+        "startingDeadlineSeconds": {
+          "type": ["integer", "null"],
+          "minimum": 1
         },
         "ttlSecondsAfterFinished": {
           "type": "integer",
@@ -256,6 +285,20 @@
       "properties": {
         "enabled": {
           "type": "boolean"
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "pullPolicy": {
+              "type": "string"
+            }
+          }
         },
         "mode": {
           "type": "string",

@@ -92,8 +92,12 @@ spec:
             {{- end }}
       volumes:
         - name: web-config
+          {{- if or .Values.web.persistence.config.enabled .Values.web.persistence.config.existingClaim }}
           persistentVolumeClaim:
             claimName: {{ default (printf "%s-web-config" (include "duplicacy.fullname" .)) .Values.web.persistence.config.existingClaim }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
         - name: web-logs
           emptyDir: {}
         - name: web-cache
