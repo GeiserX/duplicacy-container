@@ -15,6 +15,9 @@ spec:
   suspend: {{ .Values.cron.suspend }}
   successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
+  {{- with .Values.cron.startingDeadlineSeconds }}
+  startingDeadlineSeconds: {{ . }}
+  {{- end }}
   jobTemplate:
     spec:
       {{- if ne .Values.cron.activeDeadlineSeconds nil }}
@@ -23,9 +26,6 @@ spec:
       activeDeadlineSeconds: {{ mul .Values.cron.env.maxRuntimeHours 3600 }}
       {{- end }}
       backoffLimit: {{ .Values.cron.backoffLimit }}
-      {{- with .Values.cron.startingDeadlineSeconds }}
-      startingDeadlineSeconds: {{ . }}
-      {{- end }}
       ttlSecondsAfterFinished: {{ .Values.cron.ttlSecondsAfterFinished }}
       template:
         metadata:
