@@ -1,0 +1,25 @@
+apiVersion: v2
+name: duplicacy
+description: Helm chart for the Duplicacy container stack on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+maintainers:
+  - name: Sergio Fernandez
+    email: acsdesk@protonmail.com
+keywords:
+  - duplicacy
+  - backup
+  - webui
+  - prometheus
+  - exporter
+  - s3
+  - monitoring
+  - kubernetes
+home: https://github.com/GeiserX/duplicacy-container
+sources:
+  - https://github.com/GeiserX/duplicacy-container
+  - https://github.com/GeiserX/duplicacy-cli-cron
+  - https://github.com/GeiserX/duplicacy-exporter
+annotations:
+  licenses: GPL-3.0

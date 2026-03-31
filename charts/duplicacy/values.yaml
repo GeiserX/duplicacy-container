@@ -1,0 +1,205 @@
+## Duplicacy backup job + exporter.
+
+## -- Global settings
+nameOverride: ""
+fullnameOverride: ""
+
+## -- Image pull secrets shared by both workloads
+imagePullSecrets: []
+
+## -- Service account for both workloads
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+## -- One-shot backup Job scheduled by Kubernetes
+cron:
+  enabled: true
+  image:
+    repository: drumsergio/duplicacy-container
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  restartPolicy: OnFailure
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  activeDeadlineSeconds: null
+  command:
+    - /bin/sh
+    - -ec
+  args:
+    - |
+      if [ -n "${LOG_FILE:-}" ]; then
+        mkdir -p "$(dirname "${LOG_FILE}")"
+        run-parts /etc/periodic/daily 2>&1 | tee -a "${LOG_FILE}"
+      else
+        run-parts /etc/periodic/daily
+      fi
+  # -- Optional mount for /config (dual-executor.sh, config-s3.sh, etc.)
+  config:
+    existingClaim: ""
+    configMapName: ""
+    mountPath: /config
+    subPath: ""
+    readOnly: false
+  # -- Optional mount for /etc/periodic containing daily wrapper scripts
+  periodic:
+    existingClaim: ""
+    configMapName: ""
+    mountPath: /etc/periodic/daily
+    subPath: ""
+    readOnly: false
+  storage:
+    endpoint1: ""
+    endpoint2: ""
+    bucket: ""
+    region: ""
+  # -- Repository credentials. Keys are sanitized to valid env names.
+  # -- Example:
+  # -- credentials:
+  # --   APPDATA:
+  # --     s3Id: "primary-key"
+  # --     s3Secret: "primary-secret"
+  # --     password: "repo-password"
+  # --   APPDATAC:
+  # --     s3Id: "secondary-key"
+  # --     s3Secret: "secondary-secret"
+  # --     password: "repo-password"
+  credentials: {}
+  notification:
+    shoutrrrUrl: ""
+  env:
+    host: ""
+    timezone: Etc/UTC
+    threads: 4
+    maxRuntimeHours: 71
+    secondaryRetries: 3
+    secondaryPreflightTimeout: 120
+  # -- Shared log file used by both the backup Job and the exporter.
+  logFile: /logs/duplicacy.log
+  # -- Reuse an existing Secret instead of creating one from values.
+  existingSecret: ""
+  extraEnv: []
+  extraEnvFrom: []
+  # -- Source volumes to back up. Each entry can be a hostPath or an existing PVC.
+  sourceVolumes: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
+## -- Deployment for duplicacy-exporter metrics
+exporter:
+  enabled: true
+  image:
+    repository: drumsergio/duplicacy-exporter
+    tag: "0.3.3"
+    pullPolicy: IfNotPresent
+  mode: log_tail
+  port: 9750
+  webhookPath: /webhook
+  replayHours: 25
+  tailscaleDomain: mango-alpha.ts.net
+  storageHostMap: {}
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    annotations: {}
+  serviceMonitor:
+    enabled: false
+    interval: 60s
+    scrapeTimeout: ""
+    namespace: ""
+    additionalLabels: {}
+    relabelings: []
+    metricRelabelings: []
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+
+## -- Optional Duplicacy Web UI pod. Disabled by default and intentionally generic.
+web:
+  enabled: false
+  image:
+    repository: ""
+    tag: ""
+    pullPolicy: IfNotPresent
+  command: []
+  args: []
+  port: 3875
+  service:
+    type: ClusterIP
+    annotations: {}
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: duplicacy-web.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+  persistence:
+    config:
+      enabled: true
+      existingClaim: ""
+      size: 5Gi
+      storageClass: ""
+      accessModes:
+        - ReadWriteOnce
+  extraEnv: []
+  extraEnvFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 1Gi
+
+## -- Shared log PVC for LOG_FILE mode
+sharedLogs:
+  enabled: true
+  existingClaim: ""
+  size: 1Gi
+  storageClass: ""
+  accessModes:
+    - ReadWriteMany

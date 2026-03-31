@@ -1,0 +1,58 @@
+Duplicacy has been deployed to your cluster.
+
+{{- if .Values.cron.enabled }}
+
+== Backup CronJob ==
+  Schedule: {{ .Values.cron.schedule }}
+  The CronJob "{{ include "duplicacy.fullname" . }}-cron" runs /etc/periodic/daily once per schedule.
+{{- if and (not .Values.cron.config.existingClaim) (not .Values.cron.config.configMapName) }}
+  No /config mount was configured. Mount a PVC or ConfigMap with dual-executor.sh and any other required scripts.
+{{- end }}
+{{- if and (not .Values.cron.periodic.existingClaim) (not .Values.cron.periodic.configMapName) }}
+  No /etc/periodic mount was configured. Add daily wrapper scripts via a PVC or ConfigMap before expecting backups to run.
+{{- end }}
+  View recent jobs:
+    kubectl get jobs -l app.kubernetes.io/component=cron -n {{ .Release.Namespace }}
+  View logs of the latest job:
+    kubectl logs job/$(kubectl get jobs -l app.kubernetes.io/component=cron -n {{ .Release.Namespace }} --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}') -n {{ .Release.Namespace }}
+{{- end }}
+
+{{- if .Values.exporter.enabled }}
+
+== Prometheus Exporter ==
+  Metrics are exposed on port {{ .Values.exporter.port }}.
+  Access the metrics endpoint:
+    kubectl port-forward svc/{{ include "duplicacy.fullname" . }}-exporter {{ .Values.exporter.port }}:{{ .Values.exporter.port }} -n {{ .Release.Namespace }}
+    curl http://localhost:{{ .Values.exporter.port }}/metrics
+  Health check:
+    curl http://localhost:{{ .Values.exporter.port }}/health
+
+{{- if .Values.exporter.serviceMonitor.enabled }}
+  A ServiceMonitor has been created for Prometheus Operator auto-discovery.
+{{- else }}
+  To enable Prometheus Operator auto-discovery, set exporter.serviceMonitor.enabled=true.
+{{- end }}
+{{- end }}
+
+{{- if and .Values.cron.enabled .Values.exporter.enabled .Values.sharedLogs.enabled }}
+
+== Log Sharing ==
+  The backup Job appends stdout/stderr to {{ .Values.cron.logFile }} and the exporter tails the same file.
+  PVC: {{ default (printf "%s-logs" (include "duplicacy.fullname" .)) .Values.sharedLogs.existingClaim }}
+{{- end }}
+
+{{- if .Values.web.enabled }}
+
+== Optional Web UI ==
+  The Web UI service is exposed on port {{ .Values.web.port }}.
+  Access it locally with:
+    kubectl port-forward svc/{{ include "duplicacy.fullname" . }}-web {{ .Values.web.port }}:{{ .Values.web.port }} -n {{ .Release.Namespace }}
+{{- if .Values.web.ingress.enabled }}
+  Ingress has been enabled for:
+{{- range .Values.web.ingress.hosts }}
+    - {{ .host }}
+{{- end }}
+{{- else }}
+  To expose it externally, enable web.ingress.enabled or use your own Service/Ingress objects.
+{{- end }}
+{{- end }}

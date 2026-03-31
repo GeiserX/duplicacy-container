@@ -1,0 +1,22 @@
+{{- if .Values.exporter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "duplicacy.fullname" . }}-exporter
+  labels:
+    {{- include "duplicacy.labels" . | nindent 4 }}
+    app.kubernetes.io/component: exporter
+  {{- with .Values.exporter.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.exporter.service.type }}
+  ports:
+    - port: {{ .Values.exporter.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "duplicacy.exporter.selectorLabels" . | nindent 4 }}
+{{- end }}

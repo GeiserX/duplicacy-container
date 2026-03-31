@@ -1,0 +1,16 @@
+{{- if .Values.cron.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "duplicacy.fullname" . }}-config
+  labels:
+    {{- include "duplicacy.labels" . | nindent 4 }}
+data:
+  DUPLICACY_THREADS: {{ .Values.cron.env.threads | quote }}
+  HOST: {{ .Values.cron.env.host | quote }}
+  LOG_FILE: {{ .Values.cron.logFile | quote }}
+  MAX_RUNTIME_HOURS: {{ .Values.cron.env.maxRuntimeHours | quote }}
+  SECONDARY_PREFLIGHT_TIMEOUT: {{ .Values.cron.env.secondaryPreflightTimeout | quote }}
+  SECONDARY_RETRIES: {{ .Values.cron.env.secondaryRetries | quote }}
+  TZ: {{ .Values.cron.env.timezone | quote }}
+{{- end }}

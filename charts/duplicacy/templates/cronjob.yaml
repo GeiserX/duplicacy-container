@@ -1,0 +1,160 @@
+{{- if .Values.cron.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "duplicacy.fullname" . }}-cron
+  labels:
+    {{- include "duplicacy.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cron
+spec:
+  schedule: {{ .Values.cron.schedule | quote }}
+  concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ default (mul .Values.cron.env.maxRuntimeHours 3600) .Values.cron.activeDeadlineSeconds }}
+      backoffLimit: {{ .Values.cron.backoffLimit }}
+      ttlSecondsAfterFinished: {{ .Values.cron.ttlSecondsAfterFinished }}
+      template:
+        metadata:
+          labels:
+            {{- include "duplicacy.cron.selectorLabels" . | nindent 12 }}
+            {{- with .Values.cron.podLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.cron.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ include "duplicacy.serviceAccountName" . }}
+          {{- with .Values.cron.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: {{ .Values.cron.restartPolicy }}
+          containers:
+            - name: duplicacy-cron
+              image: "{{ .Values.cron.image.repository }}:{{ .Values.cron.image.tag }}"
+              imagePullPolicy: {{ .Values.cron.image.pullPolicy }}
+              {{- with .Values.cron.command }}
+              command:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.cron.args }}
+              args:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              envFrom:
+                - configMapRef:
+                    name: {{ include "duplicacy.fullname" . }}-config
+                {{- if or .Values.cron.existingSecret (include "duplicacy.hasCronSecretData" .) }}
+                - secretRef:
+                    name: {{ include "duplicacy.cronSecretName" . }}
+                {{- end }}
+                {{- with .Values.cron.extraEnvFrom }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+              {{- with .Values.cron.extraEnv }}
+              env:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.cron.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.cron.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              volumeMounts:
+                {{- if or .Values.cron.config.existingClaim .Values.cron.config.configMapName }}
+                - name: config
+                  mountPath: {{ .Values.cron.config.mountPath }}
+                  readOnly: {{ .Values.cron.config.readOnly }}
+                  {{- if .Values.cron.config.subPath }}
+                  subPath: {{ .Values.cron.config.subPath }}
+                  {{- end }}
+                {{- end }}
+                {{- if or .Values.cron.periodic.existingClaim .Values.cron.periodic.configMapName }}
+                - name: periodic
+                  mountPath: {{ .Values.cron.periodic.mountPath }}
+                  readOnly: {{ .Values.cron.periodic.readOnly }}
+                  {{- if .Values.cron.periodic.subPath }}
+                  subPath: {{ .Values.cron.periodic.subPath }}
+                  {{- end }}
+                {{- end }}
+                {{- if .Values.sharedLogs.enabled }}
+                - name: shared-logs
+                  mountPath: /logs
+                {{- end }}
+                {{- range .Values.cron.sourceVolumes }}
+                - name: {{ .name }}
+                  mountPath: /backup/{{ .name }}
+                  readOnly: true
+                {{- end }}
+                {{- with .Values.cron.extraVolumeMounts }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+          volumes:
+            {{- if or .Values.cron.config.existingClaim .Values.cron.config.configMapName }}
+            - name: config
+              {{- if .Values.cron.config.existingClaim }}
+              persistentVolumeClaim:
+                claimName: {{ .Values.cron.config.existingClaim }}
+              {{- else if .Values.cron.config.configMapName }}
+              configMap:
+                name: {{ .Values.cron.config.configMapName }}
+                defaultMode: 0755
+              {{- end }}
+            {{- end }}
+            {{- if or .Values.cron.periodic.existingClaim .Values.cron.periodic.configMapName }}
+            - name: periodic
+              {{- if .Values.cron.periodic.existingClaim }}
+              persistentVolumeClaim:
+                claimName: {{ .Values.cron.periodic.existingClaim }}
+              {{- else if .Values.cron.periodic.configMapName }}
+              configMap:
+                name: {{ .Values.cron.periodic.configMapName }}
+                defaultMode: 0755
+              {{- end }}
+            {{- end }}
+            {{- if .Values.sharedLogs.enabled }}
+            - name: shared-logs
+              persistentVolumeClaim:
+                claimName: {{ default (printf "%s-logs" (include "duplicacy.fullname" .)) .Values.sharedLogs.existingClaim }}
+            {{- end }}
+            {{- range .Values.cron.sourceVolumes }}
+            - name: {{ .name }}
+              {{- if .hostPath }}
+              hostPath:
+                path: {{ .hostPath.path }}
+                {{- if .hostPath.type }}
+                type: {{ .hostPath.type }}
+                {{- end }}
+              {{- else if .persistentVolumeClaim }}
+              persistentVolumeClaim:
+                claimName: {{ .persistentVolumeClaim.claimName }}
+              {{- end }}
+            {{- end }}
+            {{- with .Values.cron.extraVolumes }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.cron.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cron.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cron.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

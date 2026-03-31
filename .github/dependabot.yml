@@ -1,0 +1,53 @@
+version: 2
+
+updates:
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "docker"
+    labels:
+      - "dependencies"
+      - "automated"
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      docker_security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        ignore:
+          - dependency-name: "*"
+            update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "ci"
+      - "automated"
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      github_actions_security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        ignore:
+          - dependency-name: "*"
+            update-types: ["version-update:semver-major"]
