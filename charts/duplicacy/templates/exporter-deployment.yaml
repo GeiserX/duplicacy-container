@@ -1,4 +1,7 @@
 {{- if .Values.exporter.enabled }}
+{{- if and (eq .Values.exporter.mode "log_tail") (not .Values.sharedLogs.enabled) }}
+{{- fail "exporter.mode=log_tail requires sharedLogs.enabled=true (the exporter needs the shared /logs volume to tail). Either enable sharedLogs or set exporter.mode=webhook." }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,7 +57,7 @@ spec:
             - name: WEBHOOK_PATH
               value: {{ .Values.exporter.webhookPath | quote }}
             - name: LOG_FILE
-              value: {{ .Values.cron.logFile | quote }}
+              value: {{ ternary .Values.cron.logFile "" (or .Values.sharedLogs.enabled (not (hasPrefix "/logs/" .Values.cron.logFile))) | quote }}
             {{- if .Values.exporter.storageHostMap }}
             - name: STORAGE_HOST_MAP
               value: {{ toJson .Values.exporter.storageHostMap | quote }}
