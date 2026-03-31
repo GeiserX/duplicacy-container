@@ -2,6 +2,7 @@ apiVersion: v2
 name: duplicacy
 description: Helm chart for the Duplicacy container stack on Kubernetes
 type: application
+kubeVersion: ">=1.21.0-0"
 version: 0.1.0
 appVersion: "0.1.0"
 maintainers:

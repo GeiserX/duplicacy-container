@@ -12,6 +12,7 @@ This chart packages the full Duplicacy stack for Kubernetes:
 - The exporter defaults to `MODE=log_tail` and reads `cron.logFile`.
 - The Web UI is disabled by default and intentionally generic so the chart does not hardcode an unofficial UI image.
 - You can provide Duplicacy scripts from either existing PVCs or ConfigMaps mounted at `/config` and `/etc/periodic`.
+- `sharedLogs` assumes an RWX-capable storage class by default because the CronJob pod and exporter may run on different nodes.
 
 ## Before Installing
 
@@ -68,7 +69,7 @@ web:
   enabled: true
   image:
     repository: saspus/duplicacy-web
-    tag: latest
+    tag: 1.0.0
   ingress:
     enabled: true
     hosts:
@@ -91,8 +92,11 @@ The Web UI block stays generic on purpose:
 - The default `cron.periodic.mountPath` is `/etc/periodic/daily`, which makes ConfigMap-based wrapper scripts work out of the box
 - `cron.existingSecret`: reuse a pre-created Secret instead of rendering one from values
 - `cron.extraEnvFrom`: bring in External Secrets or other ConfigMaps
+- `cron.timeZone`: pin the CronJob to an explicit timezone instead of relying on cluster defaults
 - `sharedLogs.existingClaim`: use an existing PVC for `LOG_FILE` mode
+- `sharedLogs.accessModes`: keep `ReadWriteMany` unless you are intentionally constraining both workloads to the same node
 - `exporter.storageHostMap`: map raw storage hosts/IPs to friendly labels in metrics
+- `exporter.tailscaleDomain`: optional friendly domain suffix for exporter labels; left empty by default
 - `web.persistence.config.*`: keep Web UI config on a PVC while leaving logs/cache ephemeral unless you override them
 
 ## Monitoring

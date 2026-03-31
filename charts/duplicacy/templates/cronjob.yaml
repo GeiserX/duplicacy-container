@@ -8,13 +8,24 @@ metadata:
     app.kubernetes.io/component: cron
 spec:
   schedule: {{ .Values.cron.schedule | quote }}
+  {{- with .Values.cron.timeZone }}
+  timeZone: {{ . | quote }}
+  {{- end }}
   concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
+  suspend: {{ .Values.cron.suspend }}
   successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
-      activeDeadlineSeconds: {{ default (mul .Values.cron.env.maxRuntimeHours 3600) .Values.cron.activeDeadlineSeconds }}
+      {{- if ne .Values.cron.activeDeadlineSeconds nil }}
+      activeDeadlineSeconds: {{ .Values.cron.activeDeadlineSeconds }}
+      {{- else if .Values.cron.env.maxRuntimeHours }}
+      activeDeadlineSeconds: {{ mul .Values.cron.env.maxRuntimeHours 3600 }}
+      {{- end }}
       backoffLimit: {{ .Values.cron.backoffLimit }}
+      {{- with .Values.cron.startingDeadlineSeconds }}
+      startingDeadlineSeconds: {{ . }}
+      {{- end }}
       ttlSecondsAfterFinished: {{ .Values.cron.ttlSecondsAfterFinished }}
       template:
         metadata:
