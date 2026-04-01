@@ -34,13 +34,16 @@ That stack is bigger than an exporter-only concern, so it lives better in its ow
 - `values.schema.json`, chart README, and Helm CI/release workflows
 - Designed for real operators: existing secrets, existing PVCs, ServiceMonitor support, and escape hatches via `extraEnv`/`extraVolumes`
 
+[![ArtifactHub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/duplicacy&style=flat-square)](https://artifacthub.io/packages/helm/duplicacy/duplicacy)
+
 ## Quick Start
 
 ```bash
-helm upgrade --install duplicacy ./charts/duplicacy -f my-values.yaml
+helm repo add duplicacy https://geiserx.github.io/duplicacy-container
+helm install duplicacy duplicacy/duplicacy -f my-values.yaml
 ```
 
-See `charts/duplicacy/README.md` for chart-specific values and examples.
+See the [chart documentation](charts/duplicacy/README.md) for the full values reference and examples.
 
 ## Web UI Support
 
