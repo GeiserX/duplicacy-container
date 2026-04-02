@@ -65,12 +65,16 @@ The bundled image is intentionally minimal:
 
 That lets `duplicacy-cli-cron` stay focused on reusable scripts and backup recipes while this repo owns the runtime/container distribution.
 
-## Related Projects
+## Ecosystem
 
-- [`duplicacy-container`](https://github.com/GeiserX/duplicacy-container) - Runtime image and Kubernetes stack chart for Duplicacy
-- [`duplicacy-cli-cron`](https://github.com/GeiserX/duplicacy-cli-cron) - Scripts, wrappers, and backup recipes for Duplicacy CLI
-- [`duplicacy-exporter`](https://github.com/GeiserX/duplicacy-exporter) - Prometheus exporter for Duplicacy backup metrics
-- [Duplicacy](https://duplicacy.com) - lock-free deduplication backup tool
+| Project | Type | Description |
+|---------|------|-------------|
+| [duplicacy-cli-cron](https://github.com/GeiserX/duplicacy-cli-cron) | Docker | Docker-based CLI backup automation with cron and Telegram notifications |
+| [duplicacy-exporter](https://github.com/GeiserX/duplicacy-exporter) | Prometheus | Prometheus exporter for real-time backup metrics |
+| [duplicacy-ha](https://github.com/GeiserX/duplicacy-ha) | Home Assistant | Home Assistant integration for backup monitoring |
+| [duplicacy-mcp](https://github.com/GeiserX/duplicacy-mcp) | MCP | MCP server for monitoring backups from AI assistants |
+
+See also [Duplicacy](https://duplicacy.com) — the lock-free deduplication backup tool this ecosystem is built around.
 
 ## License
 
