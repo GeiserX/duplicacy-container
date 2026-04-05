@@ -57,20 +57,15 @@ cron:
     subPath: ""
     readOnly: false
   storage:
-    endpoint1: ""
-    endpoint2: ""
+    endpoint: ""
     bucket: ""
     region: ""
   # -- Repository credentials. Keys are sanitized to valid env names.
   # -- Example:
   # -- credentials:
   # --   APPDATA:
-  # --     s3Id: "primary-key"
-  # --     s3Secret: "primary-secret"
-  # --     password: "repo-password"
-  # --   APPDATAC:
-  # --     s3Id: "secondary-key"
-  # --     s3Secret: "secondary-secret"
+  # --     s3Id: "access-key"
+  # --     s3Secret: "secret-key"
   # --     password: "repo-password"
   credentials: {}
   notification:
@@ -80,8 +75,6 @@ cron:
     timezone: Etc/UTC
     threads: 4
     maxRuntimeHours: 71
-    secondaryRetries: 3
-    secondaryPreflightTimeout: 120
   # -- Shared log file used by both the backup Job and the exporter.
   logFile: /logs/duplicacy.log
   # -- Reuse an existing Secret instead of creating one from values.
@@ -111,7 +104,7 @@ exporter:
   enabled: true
   image:
     repository: drumsergio/duplicacy-exporter
-    tag: "0.3.3"
+    tag: "0.3.4"
     pullPolicy: IfNotPresent
   mode: log_tail
   port: 9750
