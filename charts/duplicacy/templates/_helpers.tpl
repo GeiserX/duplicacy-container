@@ -89,7 +89,7 @@ Create the name of the service account to use
 Whether the chart should create a Secret for the backup Job.
 */}}
 {{- define "duplicacy.hasCronSecretData" -}}
-{{- if or .Values.cron.storage.endpoint1 .Values.cron.storage.endpoint2 .Values.cron.storage.bucket .Values.cron.storage.region .Values.cron.notification.shoutrrrUrl (gt (len .Values.cron.credentials) 0) -}}
+{{- if or .Values.cron.storage.endpoint .Values.cron.storage.bucket .Values.cron.storage.region .Values.cron.notification.shoutrrrUrl (gt (len .Values.cron.credentials) 0) -}}
 true
 {{- end -}}
 {{- end }}
