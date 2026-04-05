@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/banner.svg" alt="duplicacy-container banner" width="900"/>
+</p>
+
 # duplicacy-container
 
 Container image and Helm chart repository for running a production-friendly Duplicacy stack on Kubernetes.
