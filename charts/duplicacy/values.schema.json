@@ -31,7 +31,8 @@
         "name": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "cron": {
       "type": "object",
@@ -124,7 +125,8 @@
             "readOnly": {
               "type": "boolean"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "periodic": {
           "type": "object",
@@ -144,15 +146,13 @@
             "readOnly": {
               "type": "boolean"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "storage": {
           "type": "object",
           "properties": {
-            "endpoint1": {
-              "type": "string"
-            },
-            "endpoint2": {
+            "endpoint": {
               "type": "string"
             },
             "bucket": {
@@ -161,7 +161,8 @@
             "region": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "credentials": {
           "type": "object",
@@ -186,7 +187,8 @@
             "shoutrrrUrl": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "env": {
           "type": "object",
@@ -204,16 +206,9 @@
             "maxRuntimeHours": {
               "type": "integer",
               "minimum": 1
-            },
-            "secondaryRetries": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "secondaryPreflightTimeout": {
-              "type": "integer",
-              "minimum": 1
             }
-          }
+          },
+          "additionalProperties": false
         },
         "logFile": {
           "type": "string"
@@ -278,7 +273,8 @@
         "resources": {
           "type": "object"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "exporter": {
       "type": "object",
@@ -336,7 +332,8 @@
             "annotations": {
               "type": "object"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "serviceMonitor": {
           "type": "object",
@@ -368,7 +365,8 @@
                 "type": "object"
               }
             }
-          }
+          },
+          "additionalProperties": false
         },
         "extraEnv": {
           "type": "array",
@@ -421,7 +419,8 @@
         "resources": {
           "type": "object"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "web": {
       "type": "object",
@@ -470,7 +469,8 @@
             "annotations": {
               "type": "object"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "ingress": {
           "type": "object",
@@ -515,7 +515,8 @@
                 "type": "object"
               }
             }
-          }
+          },
+          "additionalProperties": false
         },
         "persistence": {
           "type": "object",
@@ -541,9 +542,11 @@
                     "type": "string"
                   }
                 }
-              }
+              },
+              "additionalProperties": false
             }
-          }
+          },
+          "additionalProperties": false
         },
         "extraEnv": {
           "type": "array",
@@ -596,7 +599,8 @@
         "resources": {
           "type": "object"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "sharedLogs": {
       "type": "object",
@@ -619,7 +623,9 @@
             "type": "string"
           }
         }
-      }
+      },
+      "additionalProperties": false
     }
-  }
+  },
+  "additionalProperties": false
 }
