@@ -20,6 +20,9 @@ cron:
     repository: drumsergio/duplicacy-container
     tag: "0.1.0"
     pullPolicy: IfNotPresent
+  # -- Kubernetes CronJob schedule (standard cron syntax).
+  # -- This replaces the CRON_DAILY / CRON_WEEKLY env vars used by
+  # -- docker-compose; those entrypoint.sh variables are ignored here.
   schedule: "0 2 * * *"
   timeZone: ""
   concurrencyPolicy: Forbid
@@ -61,6 +64,8 @@ cron:
     bucket: ""
     region: ""
   # -- Repository credentials. Keys are sanitized to valid env names.
+  # -- WARNING: For production, use `existingSecret` instead of inline credentials.
+  # -- Never commit a values file containing real secrets to version control.
   # -- Example:
   # -- credentials:
   # --   APPDATA:
