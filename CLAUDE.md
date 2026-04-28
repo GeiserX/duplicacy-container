@@ -1,4 +1,4 @@
-# AGENTS.md - AI Agent Instructions for duplicacy-container
+# CLAUDE.md - AI Agent Instructions for duplicacy-container
 
 > **PLAN MODE**: Use Plan Mode for multi-step chart changes, repo-wide refactors, release automation, or any change that affects install/upgrade behavior.
 
