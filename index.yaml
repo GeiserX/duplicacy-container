@@ -5,6 +5,36 @@ entries:
       licenses: GPL-3.0-or-later
     apiVersion: v2
     appVersion: 0.1.0
+    created: "2026-05-19T14:10:51.540660373Z"
+    description: Helm chart for the Duplicacy container stack on Kubernetes
+    digest: 922a1f681f5d65b96f53a1fc0787165323ac2b7af55484f19d836826bf0e937b
+    home: https://github.com/GeiserX/duplicacy-container
+    keywords:
+    - duplicacy
+    - backup
+    - webui
+    - prometheus
+    - exporter
+    - s3
+    - monitoring
+    - kubernetes
+    kubeVersion: '>=1.21.0-0'
+    maintainers:
+    - email: acsdesk@protonmail.com
+      name: Sergio Fernandez
+    name: duplicacy
+    sources:
+    - https://github.com/GeiserX/duplicacy-container
+    - https://github.com/GeiserX/duplicacy-cli-cron
+    - https://github.com/GeiserX/duplicacy-exporter
+    type: application
+    urls:
+    - https://github.com/GeiserX/duplicacy-container/releases/download/duplicacy-0.1.2/duplicacy-0.1.2.tgz
+    version: 0.1.2
+  - annotations:
+      licenses: GPL-3.0-or-later
+    apiVersion: v2
+    appVersion: 0.1.0
     created: "2026-03-31T22:54:08.672331271Z"
     description: Helm chart for the Duplicacy container stack on Kubernetes
     digest: 8aa53296b647518ab92eb88c6a4a2e3c5ac2465f6960ccf545a71e87ccd01b19
@@ -31,4 +61,4 @@ entries:
     urls:
     - https://github.com/GeiserX/duplicacy-container/releases/download/duplicacy-0.1.0/duplicacy-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-31T22:54:08.672336649Z"
+generated: "2026-05-19T14:10:51.540666619Z"
