@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.svg" alt="duplicacy-container banner" width="900"/>
+  <img src="https://raw.githubusercontent.com/GeiserX/duplicacy-container/main/docs/images/banner.svg" alt="duplicacy-container banner" width="900"/>
 </p>
 
 # duplicacy-container
