@@ -19,6 +19,10 @@ spec:
   startingDeadlineSeconds: {{ . }}
   {{- end }}
   jobTemplate:
+    metadata:
+      labels:
+        {{- include "duplicacy.labels" . | nindent 8 }}
+        app.kubernetes.io/component: cron
     spec:
       {{- if ne .Values.cron.activeDeadlineSeconds nil }}
       activeDeadlineSeconds: {{ .Values.cron.activeDeadlineSeconds }}

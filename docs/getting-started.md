@@ -52,7 +52,7 @@ The install notes print these commands. After the first scheduled run:
 
 ```bash
 kubectl get jobs -l app.kubernetes.io/component=cron
-kubectl logs job/<the newest job name>
+kubectl logs job/JOB_NAME   # a name from the list above
 ```
 
 The Job shows `1/1` completions and its log ends with your wrapper scripts' Duplicacy output. To try a
