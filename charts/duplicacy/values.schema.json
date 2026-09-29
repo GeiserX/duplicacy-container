@@ -149,10 +149,7 @@
         "storage": {
           "type": "object",
           "properties": {
-            "endpoint1": {
-              "type": "string"
-            },
-            "endpoint2": {
+            "endpoint": {
               "type": "string"
             },
             "bucket": {

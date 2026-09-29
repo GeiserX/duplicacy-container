@@ -33,18 +33,13 @@ cron:
   periodic:
     configMapName: duplicacy-periodic
   storage:
-    endpoint1: garage-a:9000
-    endpoint2: garage-b:9000
+    endpoint: s3.example.com:9000
     bucket: duplicacy
-    region: garage
+    region: us-east-1
   credentials:
     APPDATA:
-      s3Id: primary-key
-      s3Secret: primary-secret
-      password: repo-password
-    APPDATAC:
-      s3Id: secondary-key
-      s3Secret: secondary-secret
+      s3Id: access-key
+      s3Secret: secret-key
       password: repo-password
 
 sharedLogs:
@@ -59,7 +54,8 @@ exporter:
 Install with:
 
 ```bash
-helm upgrade --install duplicacy ./charts/duplicacy -f my-values.yaml
+helm repo add duplicacy https://geiserx.github.io/duplicacy-container
+helm upgrade --install duplicacy duplicacy/duplicacy -f my-values.yaml
 ```
 
 ## Optional Web UI Example
