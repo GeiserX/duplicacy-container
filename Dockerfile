@@ -5,10 +5,13 @@ ARG TARGETVARIANT
 
 WORKDIR /config
 
+# The bundle upgrade drops the compromised eMudhra intermediates, which the base
+# image's ca-certificates-bundle 20260909-r0 still trusts.
 RUN apk update && apk add --no-cache \
     busybox-openrc \
     wget \
-    tar
+    tar \
+    && apk upgrade --no-cache ca-certificates-bundle
 
 # Download duplicacy for the target architecture
 RUN case "${TARGETARCH}" in \
